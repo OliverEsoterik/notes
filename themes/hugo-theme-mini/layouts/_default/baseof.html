@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{{ $.Site.LanguageCode | default "en" }}">
+  <head>
+    <title>{{ block "title" . }}{{ with .Params.Title }}{{ . }} | {{ end }}{{ .Site.Title }}{{ end }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&display=swap" rel="stylesheet">
+
+    {{ partial "head.html" . }}
+
+  </head>
+
+  <body>
+    {{ partial "navigation.html" . }}
+
+    <main class="main">
+      {{ block "main" . }}{{ end }}
+    </main>
+    
+    {{ partial "footer.html" . }}
+  </body>
+</html>
