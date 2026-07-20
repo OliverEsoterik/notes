@@ -1,0 +1,10 @@
+baseURL = 'https://OliverEsoterik.github.io/notes/'
+languageCode = 'en-us'
+title = ''
+theme = 'hugo-theme-mini'
+summaryLength = 0
+[params]
+  hiddenPostSummaryInHomePage = true
+  showPowerBy = false
+  research = "Research"
+  copyright = " "

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <title>Adaptive Knowledge Representation with Metagraphs | </title>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400&display=swap" rel="stylesheet">
+
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">    
+<meta name="viewport" content="width=device-width,minimum-scale=1">
+<meta name="description" content="Adaptive Knowledge Representation with Metagraphs">
+<meta name="generator" content="Hugo 0.123.7">
+
+
+  <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+
+
+
+
+
+
+
+
+  </head>
+
+  <body>
+    <nav class="navigation">
+	
+		<a href="/"> <span class="arrow">←</span>Home</a>
+	
+	
+	<a href="/about">About</a>
+
+	
+
+	
+</nav>
+
+
+    <main class="main">
+      
+
+<section id="single">
+    <h1 class="title">Adaptive Knowledge Representation with Metagraphs</h1>
+
+    <div class="tip">
+        <time datetime="2025-03-21 00:00:00 &#43;0000 UTC">Mar 21, 2025</time>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          1154 words
+        </span>
+        <span class="split">
+          ·
+        </span>
+        <span>
+          6 minute read
+        </span>
+    </div>
+
+    
+    
+
+
+    <div class="content">
+      <p>Large language models face some fundamental limitations - they can only operate on the data they have been trained on. When we want to extend their knowledge capabilities, we generally have two options: either re-training the entire model or implementing Retrieval-Augmented Generation (RAG) systems. While a multi-agent communication approach might offer another avenue (where specialized agents exchange information as needed), the implementation details remain somehow an open question for another article.</p>
+<p>Both re-training and RAG come with some drawbacks. Fine-tuned LLMs remain black boxes and don&rsquo;t inherently capture structured relationships between concepts. Meanwhile, RAG systems fetch documents based on similarity metrics but lack the capacity to dynamically reason about the information they retrieve. So, when new information contradicts established knowledge, RAG doesn`t modify existing beliefs.</p>
+<p>The core issue here is neither approach effectively builds knowledge. They simply capture and export content without true understanding or adaptation.</p>
+<h2 id="moving-toward-adaptive-knowledge-representation">Moving Toward Adaptive Knowledge Representation <a href="#moving-toward-adaptive-knowledge-representation" class="anchor">🔗</a></h2><p>To address these limitations, we somehow need systems that can represent knowledge in a more sophisticated manner. Graph theory offers a foundation for knowledge modeling, but traditional graphs only connect two nodes at a time which represents another issue. While this works for simple relationships, capturing nuanced information requires context, groupings, weightings, adaptability, and multi-node relationships. This is where Hypergraphs and Metagraphs expand the picture, offering a more flexible way to model complex relationships.</p>
+<p>Unlike standard graphs, Hypergraphs allow edges (Hyperedges) to connect multiple nodes simultaneously. This capability enables us to model far more complex relationships and knowledge structures. Metagraphs extend this concept even further by incorporating attributes, constraints, and higher-order relationships, making them even more expressive for knowledge representation.</p>
+<h2 id="atomspace-a-hypergraph-based-knowledge-framework">AtomSpace: A Hypergraph-Based Knowledge Framework <a href="#atomspace-a-hypergraph-based-knowledge-framework" class="anchor">🔗</a></h2><p>SingularityNet`s AtomSpace, part of the OpenCog project, provides an implementation of hypergraph-based knowledge representation. To truly represent and manipulate knowledge, we need operations like reasoning, probability assessment, pattern matching, and logical inference. This is where Hyperon and MeTTa come in, building upon AtomSpace to enable neural-symbolic reasoning computations.</p>
+<p>You can find more information about the overall framework in <a href="https://arxiv.org/pdf/2310.18318" target="_blank" rel="noopener">OpenCog Hyperon: A Framework for AGI at the Human Level and Beyond – High-Level Background &amp; Introduction</a></p>
+<p>Let&rsquo;s take a look at a practical example of building a basic knowledge base using AtomSpace:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> opencog.atomspace <span style="color:#f92672">import</span> AtomSpace
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> opencog.utilities <span style="color:#f92672">import</span> set_default_atomspace
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> opencog.type_constructors <span style="color:#f92672">import</span> ConceptNode, EvaluationLink, PredicateNode, ListLink
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> opencog.type_constructors <span style="color:#f92672">import</span> types
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sentence_transformers <span style="color:#f92672">import</span> SentenceTransformer
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> sklearn.metrics.pairwise <span style="color:#f92672">import</span> cosine_similarity
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Initialize the atomspace</span>
+</span></span><span style="display:flex;"><span>atomspace <span style="color:#f92672">=</span> AtomSpace()
+</span></span><span style="display:flex;"><span>set_default_atomspace(atomspace)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Create basic concept nodes</span>
+</span></span><span style="display:flex;"><span>node1 <span style="color:#f92672">=</span> ConceptNode(<span style="color:#e6db74">&#34;Animal&#34;</span>)
+</span></span><span style="display:flex;"><span>node2 <span style="color:#f92672">=</span> ConceptNode(<span style="color:#e6db74">&#34;Dog&#34;</span>)
+</span></span><span style="display:flex;"><span>node3 <span style="color:#f92672">=</span> ConceptNode(<span style="color:#e6db74">&#34;Cat&#34;</span>)
+</span></span><span style="display:flex;"><span>node4 <span style="color:#f92672">=</span> ConceptNode(<span style="color:#e6db74">&#34;Labrador&#34;</span>)
+</span></span><span style="display:flex;"><span>node5 <span style="color:#f92672">=</span> ConceptNode(<span style="color:#e6db74">&#34;Siamese Cat&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Define relationship predicates</span>
+</span></span><span style="display:flex;"><span>predicate1 <span style="color:#f92672">=</span> PredicateNode(<span style="color:#e6db74">&#34;is_a&#34;</span>)
+</span></span><span style="display:flex;"><span>predicate2 <span style="color:#f92672">=</span> PredicateNode(<span style="color:#e6db74">&#34;is_a_subtype_of&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Model the relationships</span>
+</span></span><span style="display:flex;"><span>link1 <span style="color:#f92672">=</span> EvaluationLink(predicate1, ListLink(node2, node1))  <span style="color:#75715e"># Dog is an Animal</span>
+</span></span><span style="display:flex;"><span>link2 <span style="color:#f92672">=</span> EvaluationLink(predicate1, ListLink(node3, node1))  <span style="color:#75715e"># Cat is an Animal</span>
+</span></span><span style="display:flex;"><span>link3 <span style="color:#f92672">=</span> EvaluationLink(predicate2, ListLink(node4, node2))  <span style="color:#75715e"># Labrador is a subtype of Dog</span>
+</span></span><span style="display:flex;"><span>link4 <span style="color:#f92672">=</span> EvaluationLink(predicate2, ListLink(node5, node3))  <span style="color:#75715e"># Siamese Cat is a subtype of Cat</span>
+</span></span></code></pre></div><p>After creating the AtomSpace we basically define</p>
+<ol>
+<li>a set of nodes with values</li>
+<li>describe the overall relationships</li>
+<li>link them according to their relationships</li>
+</ol>
+<p>Afterwards, we can then extract knowledge from this structure:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">extract_knowledge_from_atomspace</span>(atomspace):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;Extract knowledge statements from the AtomSpace&#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>    knowledge <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Correctly access evaluation links from the atomspace</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> link <span style="color:#f92672">in</span> atomspace<span style="color:#f92672">.</span>get_atoms_by_type(types<span style="color:#f92672">.</span>EvaluationLink):
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> len(link<span style="color:#f92672">.</span>out) <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">2</span>:
+</span></span><span style="display:flex;"><span>            predicate <span style="color:#f92672">=</span> link<span style="color:#f92672">.</span>out[<span style="color:#ae81ff">0</span>]<span style="color:#f92672">.</span>name
+</span></span><span style="display:flex;"><span>            list_link <span style="color:#f92672">=</span> link<span style="color:#f92672">.</span>out[<span style="color:#ae81ff">1</span>]
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e"># Additional processing would happen here</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> knowledge
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">answer_question</span>(question, atomspace):
+</span></span><span style="display:flex;"><span>    knowledge <span style="color:#f92672">=</span> extract_knowledge_from_atomspace(atomspace)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> knowledge:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;No relationships found in the AtomSpace.&#34;</span>
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    model <span style="color:#f92672">=</span> SentenceTransformer(<span style="color:#e6db74">&#39;all-MiniLM-L6-v2&#39;</span>)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Return all extracted knowledge as a response</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> knowledge
+</span></span></code></pre></div><p>The overall example is simplified on purpose (we probably do not need any transformer model to tell us the given relations) - but imagine when the receiving engine abstracts concepts based on semantics and syntactical relations, writes this to the knowledge database, fine-tunes this knowledge based on probabilities, then interprets the probabilistic and logical information and uses the LLM to give insights on the knowledge in the AtomSpace.</p>
+<p>Indeed - to do these kind of operations we need further information on our nodes e.g. to include certainty, probabilities into the knowledge representation.</p>
+<h2 id="adding-probabilistic-reasoning-with-metta">Adding Probabilistic Reasoning with MeTTa <a href="#adding-probabilistic-reasoning-with-metta" class="anchor">🔗</a></h2><p>MeTTa (<a href="https://metta-lang.dev/" target="_blank" rel="noopener">https://metta-lang.dev/</a>) builds up on this and takes the Metagraph approach further by enabling probabilistic reasoning.</p>
+<p>This is how we can represent concepts with e.g. confidence values in MeTTa:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hs" data-lang="hs"><span style="display:flex;"><span>;; <span style="color:#66d9ef">Define</span> concepts
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Animal&#34;</span>)
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Dog&#34;</span>)
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Labrador&#34;</span>)
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Wolf&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>;; <span style="color:#66d9ef">Define</span> relationships with probabilities
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">EvaluationLink</span> (<span style="color:#66d9ef">PredicateNode</span> <span style="color:#e6db74">&#34;is_a&#34;</span>) (<span style="color:#66d9ef">ListLink</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Dog&#34;</span>) (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Animal&#34;</span>)) (<span style="color:#66d9ef">STV</span> <span style="color:#ae81ff">1.0</span> <span style="color:#ae81ff">1.0</span>))  ;; <span style="color:#ae81ff">100</span><span style="color:#f92672">%</span> sure <span style="color:#66d9ef">Dog</span> is an <span style="color:#66d9ef">Animal</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">EvaluationLink</span> (<span style="color:#66d9ef">PredicateNode</span> <span style="color:#e6db74">&#34;is_a&#34;</span>) (<span style="color:#66d9ef">ListLink</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Labrador&#34;</span>) (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Dog&#34;</span>)) (<span style="color:#66d9ef">STV</span> <span style="color:#ae81ff">0.95</span> <span style="color:#ae81ff">0.9</span>))  ;; <span style="color:#ae81ff">95</span><span style="color:#f92672">%</span> sure <span style="color:#66d9ef">Labrador</span> is a <span style="color:#66d9ef">Dog</span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">EvaluationLink</span> (<span style="color:#66d9ef">PredicateNode</span> <span style="color:#e6db74">&#34;is_a&#34;</span>) (<span style="color:#66d9ef">ListLink</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Wolf&#34;</span>) (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Dog&#34;</span>)) (<span style="color:#66d9ef">STV</span> <span style="color:#ae81ff">0.3</span> <span style="color:#ae81ff">0.6</span>))  ;; <span style="color:#ae81ff">30</span><span style="color:#f92672">%</span> sure <span style="color:#66d9ef">Wolf</span> is a <span style="color:#66d9ef">Dog</span>
+</span></span></code></pre></div><p>We can query the AtomSpace to retrieve all subtypes of a dog with their associated probabilities:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hs" data-lang="hs"><span style="display:flex;"><span>(<span style="color:#66d9ef">Find</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#f92672">$</span><span style="color:#66d9ef">X</span>) (<span style="color:#66d9ef">STV</span> <span style="color:#f92672">$</span>p <span style="color:#f92672">$</span>c)
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">EvaluationLink</span> (<span style="color:#66d9ef">PredicateNode</span> <span style="color:#e6db74">&#34;is_a&#34;</span>) (<span style="color:#66d9ef">ListLink</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#f92672">$</span><span style="color:#66d9ef">X</span>) (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Dog&#34;</span>)) (<span style="color:#66d9ef">STV</span> <span style="color:#f92672">$</span>p <span style="color:#f92672">$</span>c)))
+</span></span></code></pre></div><p>At this point in time we have a high confidence that dog is an animal, but not that wolf is part of the overall concept dog.</p>
+<p>But as knowledge is not static and our beliefs may change over time we need to implement some mechanism to update our current understanding of concepts.</p>
+<p>The actual strength of this approach becomes clear when we consider its adaptive capabilities.</p>
+<p>Lets examine Poppers falsifiability example with swans, starting with the belief that &ldquo;all swans are white&rdquo;:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hs" data-lang="hs"><span style="display:flex;"><span>(<span style="color:#66d9ef">EvaluationLink</span> 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">PredicateNode</span> <span style="color:#e6db74">&#34;is_a&#34;</span>) 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">ListLink</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Swan&#34;</span>) (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;White Swan&#34;</span>)) 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">STV</span> <span style="color:#ae81ff">1.0</span> <span style="color:#ae81ff">1.0</span>))  ;; <span style="color:#ae81ff">100</span><span style="color:#f92672">%</span> belief, <span style="color:#ae81ff">100</span><span style="color:#f92672">%</span> confidence
+</span></span></code></pre></div><p>As our system processes new information revealing the existence of black swans, it updates its belief:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hs" data-lang="hs"><span style="display:flex;"><span>(update<span style="color:#f92672">-</span>belief <span style="color:#e6db74">&#34;Swan&#34;</span> <span style="color:#e6db74">&#34;White Swan&#34;</span> <span style="color:#ae81ff">0.8</span> <span style="color:#ae81ff">0.9</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(<span style="color:#66d9ef">EvaluationLink</span> 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">PredicateNode</span> <span style="color:#e6db74">&#34;is_a&#34;</span>) 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">ListLink</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Swan&#34;</span>) (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;White Swan&#34;</span>)) 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">STV</span> <span style="color:#ae81ff">0.8</span> <span style="color:#ae81ff">0.9</span>))  ;; <span style="color:#66d9ef">Now</span> <span style="color:#ae81ff">80</span><span style="color:#f92672">%</span> probability but still high confidence
+</span></span></code></pre></div><p>As more evidence accumulates, the system can now introduce the concept of Black Swans and further adjusts its beliefs:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-hs" data-lang="hs"><span style="display:flex;"><span>(<span style="color:#66d9ef">EvaluationLink</span> 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">PredicateNode</span> <span style="color:#e6db74">&#34;is_a&#34;</span>) 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">ListLink</span> (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Swan&#34;</span>) (<span style="color:#66d9ef">ConceptNode</span> <span style="color:#e6db74">&#34;Black Swan&#34;</span>)) 
+</span></span><span style="display:flex;"><span>    (<span style="color:#66d9ef">STV</span> <span style="color:#ae81ff">0.1</span> <span style="color:#ae81ff">0.7</span>))  ;; <span style="color:#ae81ff">10</span><span style="color:#f92672">%</span> probability for <span style="color:#66d9ef">Black</span> <span style="color:#66d9ef">Swans</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>(update<span style="color:#f92672">-</span>belief <span style="color:#e6db74">&#34;Swan&#34;</span> <span style="color:#e6db74">&#34;White Swan&#34;</span> <span style="color:#ae81ff">0.9</span> <span style="color:#ae81ff">0.8</span>)
+</span></span><span style="display:flex;"><span>(update<span style="color:#f92672">-</span>belief <span style="color:#e6db74">&#34;Swan&#34;</span> <span style="color:#e6db74">&#34;Black Swan&#34;</span> <span style="color:#ae81ff">0.1</span> <span style="color:#ae81ff">0.6</span>)
+</span></span></code></pre></div><p>Our knowledge representation now has high confidence of the existence of White Swans, and also knows that there might be a low probability of Black Swans.</p>
+<p>And this is where also LLMs can come into play to provide us information about nodes, relationships, probabilities, certainties of the concept in the knowledge store.</p>
+<h2 id="beyond-knowledge-retrieval">Beyond Knowledge Retrieval <a href="#beyond-knowledge-retrieval" class="anchor">🔗</a></h2><p>What Hyperon offers is far more than simple knowledge retrieval. We can potentially represent procedural knowledge about tool execution within the AtomSpace or encode the knowledge needed for an agent to discover new tools based on a known schema.</p>
+<p>The system becomes not just a repository of facts, but a dynamic representation of concepts, declarative and procedural knowledge.</p>
+<p>By building systems with these adaptive knowledge representation capabilities, we move beyond the limitations of current LLM - but use LLMs as a part of the intelligent system to grow systems understanding over time.</p>
+    </div>
+
+    
+        <div class="tags">
+            
+                <a href="http://localhost:1313/tags/agi">AGI</a>
+            
+        </div>
+    
+    
+    
+
+</section>
+
+
+    </main>
+    
+    <footer id="footer">
+    
+
+    <div class="copyright">
+    
+       © Copyright 
+       2026 
+       <span class="split">
+        <svg fill="#bbbbbb" width="15" height="15" version="1.1" id="heart-15" xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 15 15">
+  <path d="M13.91,6.75c-1.17,2.25-4.3,5.31-6.07,6.94c-0.1903,0.1718-0.4797,0.1718-0.67,0C5.39,12.06,2.26,9,1.09,6.75&#xA;&#x9;C-1.48,1.8,5-1.5,7.5,3.45C10-1.5,16.48,1.8,13.91,6.75z"/>
+</svg>
+       </span>
+       
+    
+    </div>
+
+    
+</footer>
+
+
+
+  </body>
+</html>
