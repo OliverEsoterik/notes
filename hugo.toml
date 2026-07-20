@@ -1,6 +1,6 @@
 baseURL = 'https://OliverEsoterik.github.io/notes/'
 languageCode = 'en-us'
-title = 'Oliver Bock'
+title = ''
 theme = 'hugo-theme-mini'
 summaryLength = 0
 [params]
