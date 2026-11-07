@@ -12,5 +12,4 @@ enableComments = false
 Hi!\
 I`m Oliver.\
 I do things with Computers.\
-
-Please find my full CV [here](https://drive.google.com/file/d/1Sif2wr_ReBKO_aepVL3L6yVoBlMUZ_mR/view?usp=sharing)
+Please find my CV [here](https://drive.google.com/file/d/1Sif2wr_ReBKO_aepVL3L6yVoBlMUZ_mR/view?usp=sharing)

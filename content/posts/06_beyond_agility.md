@@ -5,8 +5,6 @@ date = "2026-11-07"
 description = "Why agile adoption fails for operations teams"
 +++
 
-# Beyond Agility
-
 *Why agile adoption fails for operations teams, and how to automate your way out*
 
 ---
