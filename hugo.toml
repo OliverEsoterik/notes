@@ -1,4 +1,4 @@
-baseURL = 'https://OliverEsoterik.github.io/notes/'
+baseURL = '/'
 languageCode = 'en-us'
 title = ''
 theme = 'hugo-theme-mini'
