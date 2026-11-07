@@ -12,6 +12,5 @@ enableComments = false
 Hi!\
 I`m Oliver.\
 I do things with Computers.\
-Solution Architect. DevOps Engineer. You name it.
 
 Please find my full CV [here](https://drive.google.com/file/d/1Sif2wr_ReBKO_aepVL3L6yVoBlMUZ_mR/view?usp=sharing)

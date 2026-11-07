@@ -9,8 +9,6 @@ description = "Why agile adoption fails for operations teams"
 
 *Why agile adoption fails for operations teams, and how to automate your way out*
 
-Oliver Bock
-
 ---
 
 ## The Setting
