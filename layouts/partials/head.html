@@ -11,7 +11,7 @@
 {{ end }}
 
 <link rel="stylesheet" href="/notes/css/style.css">
-<style>body { background-color: #F5F4ED; } nav.navigation { background: #F5F4ED; } a, a:hover, nav.navigation a, nav.navigation a:hover, #list-page .title a, #list-page .title a:hover, #single .tags a:hover { color: #1B365D; }</style>
+<style>body { background-color: #F5F4ED; } nav.navigation { background: #F5F4ED; } a, a:hover, nav.navigation a, nav.navigation a:hover, #list-page .title a, #list-page .title a:hover, #single .tags a:hover { color: #1B365D; } #archive, #section { font-size: 18px; }</style>
 
 {{ range .Site.Params.customCSS }}
   {{ if ( or ( hasPrefix . "http://" ) ( hasPrefix . "https://" ) ) }}

@@ -7,8 +7,6 @@ author = "Oliver Bock"
 enableComments = false
 +++
 
-## Research Papers
-
 ### 2026
 - [The Operations-Bearing IT Organization - Why agile adoption fails for operations teams, and how to automate your way out](https://drive.google.com/file/d/11Dsn3fZMkY9J6EcsAvArFYfwMQkCTdH8/view?usp=sharing)
 - [AlphaMomentum: Design and Specification of a Momentum Strategy](https://drive.google.com/file/d/1Tf7TpH3H6xEYDTCq61_4fbYuFr_PmDA0/view?usp=sharing)
