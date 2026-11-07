@@ -10,7 +10,7 @@
   <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
 {{ end }}
 
-<link rel="stylesheet" href="{{ "/css/style.css" | relURL }}">
+<link rel="stylesheet" href="/notes/css/style.css">
 <style>body { background-color: #F5F4ED; } nav.navigation { background: #F5F4ED; } a, a:hover, nav.navigation a, nav.navigation a:hover, #list-page .title a, #list-page .title a:hover, #single .tags a:hover { color: #1B365D; }</style>
 
 {{ range .Site.Params.customCSS }}
@@ -23,7 +23,7 @@
   {{ end }}
 {{ end }}
 
-<link rel="shortcut icon" href="{{ "/images/favicon.ico" | relURL }}" type="image/x-icon" />
+<link rel="shortcut icon" href="/notes/images/favicon.ico" type="image/x-icon" />
 
 {{ if .Site.Params.enableGoogleAnalytics }} 
   {{ template "_internal/google_analytics.html" . }}
