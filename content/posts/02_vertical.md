@@ -2,6 +2,7 @@
 author = "Oliver Bock"
 title = "Can Vertical Farming be profitable? A Case Study"
 date = "2025-03-04"
+draft = true
 description = "Can Vertical Farming be profitable? A Case Study"
 tags = [
     "vertical farming",

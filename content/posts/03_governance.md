@@ -2,6 +2,7 @@
 author = "Oliver Bock"
 title = "A Dynamic Approach to Governance, Policy and Project Funding"
 date = "2025-03-06"
+draft = true
 description = "Thoughts on Governance and Policy"
 tags = [
     "governance", "liquid democracy"

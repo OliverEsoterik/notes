@@ -2,6 +2,7 @@
 author = "Oliver Bock"
 title = "A Framework for financial data extraction and normalization"
 date = "2025-03-03"
+draft = true
 description = "A Framework for financial data extraction and normalization"
 tags = [
     "emoji",

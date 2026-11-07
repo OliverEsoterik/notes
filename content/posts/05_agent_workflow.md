@@ -2,6 +2,7 @@
 author = "Oliver Bock"
 title = "Agentic Workflow"
 date = "2026-07-09"
+draft = true
 description = "Agentic Workflow"
 tags = [
     "Agentic"

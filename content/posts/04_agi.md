@@ -2,6 +2,7 @@
 author = "Oliver Bock"
 title = "Adaptive Knowledge Representation with Metagraphs"
 date = "2025-03-21"
+draft = true
 description = "Adaptive Knowledge Representation with Metagraphs"
 tags = [
     "AGI"
